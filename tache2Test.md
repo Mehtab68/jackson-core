@@ -12,6 +12,13 @@ La méthode parseAsIntTest est un test unitaire qui vérifie le comportement de 
 [Fonction reportInvalidNumber(String msg)](src\main\java\com\fasterxml\jackson\core\base\ParserMinimalBase.java) <br>
 [Fonction parseAsIntTest()](src\test\java\com\fasterxml\jackson\core\io\TestParseNumberInput.java)
 
+# Test 3 testBufferSize():
+
+Ce test s'assure que la méthode dans ByteArrayBuilder size donne le nombre global exact dans le buffer.
+
+[Fonction size()](src\main\java\com\fasterxml\jackson\core\util\ByteArrayBuilder.java) (ligne 91) <br>
+[Fonction testBufferSize()](src\test\java\com\fasterxml\jackson\core\util\ByteArrayBuilderTest.java) (ligne 78)
+
 ## InputCoercionException
 
 Class Location: jackson-core/src/main/java/com/fasterxml/jackson/core/exc/InputCoercionException.java
