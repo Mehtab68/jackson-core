@@ -19,6 +19,13 @@ Ce test s'assure que la méthode dans ByteArrayBuilder size donne le nombre glob
 [Fonction size()](src\main\java\com\fasterxml\jackson\core\util\ByteArrayBuilder.java) (ligne 91) <br>
 [Fonction testBufferSize()](src\test\java\com\fasterxml\jackson\core\util\ByteArrayBuilderTest.java) (ligne 78)
 
+# Test 4 writeStartObject():
+
+Ce test verifie si la méthode writeStartObject dans UTF8JsonGenerator.java roule sans probleme(ligne 393)
+
+[Fonction writeStartObject()](src\main\java\com\fasterxml\jackson\core\json\UTF8JsonGenerator.java) (ligne 393) <br>
+[Fonction testWriteStartObjectWithParameters()](src\test\java\com\fasterxml\jackson\core\write\UTF8GeneratorTest.java) (ligne 155)
+
 ## InputCoercionException
 
 Class Location: jackson-core/src/main/java/com/fasterxml/jackson/core/exc/InputCoercionException.java

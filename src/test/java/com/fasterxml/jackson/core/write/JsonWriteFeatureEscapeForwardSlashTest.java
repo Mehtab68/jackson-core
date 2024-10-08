@@ -9,12 +9,13 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.json.JsonWriteFeature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @since 2.17
  */
-class JsonWriteFeatureEscapeForwardSlashTest
-{
+class JsonWriteFeatureEscapeForwardSlashTest {
     @Test
     void dontEscapeForwardSlash() throws Exception {
         final JsonFactory jsonF = JsonFactory.builder()
@@ -59,10 +60,10 @@ class JsonWriteFeatureEscapeForwardSlashTest
         assertEquals(expJson, bytes.toString());
     }
 
-    private void _writeDoc(JsonGenerator generator) throws Exception
-    {
+    private void _writeDoc(JsonGenerator generator) throws Exception {
         generator.writeStartObject(); // start object
         generator.writeStringField("url", "http://example.com");
         generator.writeEndObject(); // end object
     }
+
 }
