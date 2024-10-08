@@ -1,3 +1,5 @@
+Mehtab-Ali Rajput (2025138) & Haoran Sun (20260543)
+
 # Test 1 skipChildren():
 
 Cette méthode permet de skip les tableaux, objets JSON et de sauter au prochain élément hors de ces structures.
