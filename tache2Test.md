@@ -5,6 +5,13 @@ Cette méthode permet de skip les tableaux, objets JSON et de sauter au prochain
 [Fonction skipChildren()](src/main/java/com/fasterxml/jackson/core/util/JsonParserSequence.java) (ligne 163 ) <br>
 [Fonction testSkipChilden()](src\test\java\com\fasterxml\jackson\core\read\ParserSequenceTest.java) (ligne 123)
 
+# Test 2 report EOF Invalid number:
+
+La méthode parseAsIntTest est un test unitaire qui vérifie le comportement de la méthode parseAsInt de la classe NumberInput.
+
+[Fonction reportInvalidNumber(String msg)](src\main\java\com\fasterxml\jackson\core\base\ParserMinimalBase.java) <br>
+[Fonction parseAsIntTest()](src\test\java\com\fasterxml\jackson\core\io\TestParseNumberInput.java)
+
 ## InputCoercionException
 
 Class Location: jackson-core/src/main/java/com/fasterxml/jackson/core/exc/InputCoercionException.java
