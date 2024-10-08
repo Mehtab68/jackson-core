@@ -1,15 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <!-- This module was also published with a richer model, Gradle metadata,  -->
-  <!-- which should be used instead. Do not delete the following line which  -->
-  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
-  <!-- that they should prefer consuming it instead. -->
-  <!-- do_not_remove: published-with-gradle-metadata -->
   <modelVersion>4.0.0</modelVersion> 
   <parent>
     <groupId>com.fasterxml.jackson</groupId>
     <artifactId>jackson-base</artifactId>
     <version>2.18.0-SNAPSHOT</version>
   </parent>
+  
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-core</artifactId>
   <name>Jackson-core</name>
@@ -33,36 +29,22 @@
   </scm>
 
   <properties>
-    <!-- 03-May-2022: Change Java compatibility for Jackson-Core 2.14 from Java6 to Java8,
-       still use Moditect to get JDK9+ module info support; need newer bundle plugin as well
-       (can just defaults from `jackson-parent`)
-      -->
-
-    <!-- 16-Nov-2022, tatu: [core#838] Verify Android SDK compatibility.
-         Baseline compatibility:
-         * Jackson 2.13 compatible with Android SDK 19 and up
-         * Jackson 2.14 compatible with Android SDK 26 and up
-         * Jackson 2.15 compatible with Android SDK 26 and up
-      -->
+    <version.plugin.surefire>3.0.0-M5</version.plugin.surefire>
+    <version.plugin.jacoco>0.8.8</version.plugin.jacoco>
+    <osgi.export>com.fasterxml.jackson.core;version=${project.version}, com.fasterxml.jackson.core.*;version=${project.version}</osgi.export>
+  
     <version.android.sdk>26</version.android.sdk>
     <version.android.sdk.signature>0.5.1</version.android.sdk.signature>
     <version.plugin.animal-sniffer>1.23</version.plugin.animal-sniffer>
 
-    <osgi.export>com.fasterxml.jackson.core;version=${project.version},
-com.fasterxml.jackson.core.*;version=${project.version}
-    </osgi.export>
     <osgi.import>!ch.randelshofer.fastdoubleparser, *</osgi.import>
 
-    <!-- Generate PackageVersion.java into this directory. -->
     <packageVersion.dir>com/fasterxml/jackson/core/json</packageVersion.dir>
     <packageVersion.package>${project.groupId}.json</packageVersion.package>
 
-    <!-- for Reproducible Builds -->
     <project.build.outputTimestamp>2024-02-27T01:34:44Z</project.build.outputTimestamp>
   </properties>
 
-  <!-- Alas, need to include snapshot reference since otherwise can not find
-       snapshot of parent... -->
   <repositories>
     <repository>
       <id>sonatype-nexus-snapshots</id>
@@ -71,86 +53,104 @@ com.fasterxml.jackson.core.*;version=${project.version}
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
+    <repository>
+      <id>gradle-plugins-repo</id>
+      <name>Gradle Plugins Repository</name>
+      <url>https://plugins.gradle.org/m2/</url> <!-- 新添加的仓库 -->
+      <snapshots><enabled>true</enabled></snapshots>
+      <releases><enabled>true</enabled></releases>
+    </repository>
   </repositories>
 
   <build>
-
     <plugins>
 
-      <!-- 26-Aug-2019, tatu: JaCoCo for code coverage -->
+      <!-- Jacoco plugin for code coverage -->
       <plugin>
-	<groupId>org.jacoco</groupId>
-	<artifactId>jacoco-maven-plugin</artifactId>
-	<executions>
-          <execution>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>${version.plugin.jacoco}</version>
+    <executions>
+        <execution>
+            <id>prepare-agent</id>
             <goals>
-              <goal>prepare-agent</goal>
+                <goal>prepare-agent</goal>
             </goals>
-          </execution>
-          <execution>
+        </execution>
+        <execution>
             <id>report</id>
             <phase>test</phase>
             <goals>
-              <goal>report</goal>
+                <goal>report</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
+        </execution>
+        <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>report-aggregate</id>
+            <phase>verify</phase>
+            <goals>
+                <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+                <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+                <dataFile>${project.build.directory}/jacoco.exec</dataFile>
+                <reports>
+                    <xml>true</xml>
+                    <html>true</html>
+                </reports>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
 
-      <!-- Important: enable enforcer plug-in: -->
+
+      <!-- Surefire plugin for running tests -->
       <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-	<executions> <!-- or?  combine.children="merge"> -->
-          <execution>
-            <id>enforce-properties</id>
-	        <phase>validate</phase>
-            <goals><goal>enforce</goal></goals>
-          </execution>
-        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${version.plugin.surefire}</version>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <excludes>
+            <exclude>**/failing/**/*.java</exclude>
+          </excludes>
+        </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
       </plugin>
+
+      <!-- Enforcer plugin to validate properties -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${version.plugin.surefire}</version>
-        <configuration>
-          <redirectTestOutputToFile>${surefire.redirectTestOutputToFile}</redirectTestOutputToFile>
-          <excludes>
-            <exclude>**/failing/**/*.java</exclude>
-          </excludes>
-<!-- 13-Apr-2018, tatu: for debugging [core#400]
-          <systemPropertyVariables>
-<com.fasterxml.jackson.core.util.BufferRecyclers.trackReusableBuffers>true</com.fasterxml.jackson.core.util.BufferRecyclers.trackReusableBuffers>
-          </systemPropertyVariables>
--->
-        </configuration>
-      </plugin>
-      <!-- settings are fine, but needed to trigger execution! -->
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-properties</id>
+            <phase>validate</phase>
+            <goals><goal>enforce</goal></goals>
+          </execution>
+        </executions>
       </plugin>
 
-      <!-- 04-Mar-2019, tatu: Add rudimentary JDK9+ module info. To build with JDK 8
-             will have to use `moduleInfoFile` as anything else requires JDK 9+
-        -->
+      <!-- Moditect plugin for JDK9+ module info -->
       <plugin>
         <groupId>org.moditect</groupId>
         <artifactId>moditect-maven-plugin</artifactId>
       </plugin>
-      <!-- 03-Nov-2020, tatu: Add LICENSE from main level -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-      </plugin>
-      
+
+      <!-- Shade plugin for creating a minimized jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
         <configuration>
           <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
           <createDependencyReducedPom>true</createDependencyReducedPom>
@@ -163,77 +163,11 @@ com.fasterxml.jackson.core.*;version=${project.version}
             <goals>
               <goal>shade</goal>
             </goals>
-            <configuration>
-              <filters>
-                <filter>
-                  <artifact>ch.randelshofer:fastdoubleparser</artifact>
-                  <excludes>
-                    <exclude>META-INF/versions/**/module-info.*</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-              <relocations>
-                <relocation>
-                  <pattern>ch/randelshofer/fastdoubleparser</pattern>
-                  <!-- 04-May-2024, tatu: [core#1264] Shade with version-specific package
-                     to prevent reuse by downstream deps.
-                     NOTE: `project.version.underscore' comes from `jackson-base/pom.xml`
-                     parent pom
-                    -->
-                  <shadedPattern>com/fasterxml/jackson/core/internal/shaded/fdp/v${project.version.underscore}</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>META-INF/LICENSE</pattern>
-                  <shadedPattern>META-INF/FastDoubleParser-LICENSE</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>META-INF/NOTICE</pattern>
-                  <shadedPattern>META-INF/FastDoubleParser-NOTICE</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>META-INF/jackson-core-LICENSE</pattern>
-                  <shadedPattern>META-INF/LICENSE</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>META-INF/jackson-core-NOTICE</pattern>
-                  <shadedPattern>META-INF/NOTICE</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>META-INF/versions/11/ch/randelshofer/fastdoubleparser</pattern>
-                  <shadedPattern>META-INF/versions/11/com/fasterxml/jackson/core/internal/shaded/fdp/v${project.version.underscore}</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>META-INF/versions/17/ch/randelshofer/fastdoubleparser</pattern>
-                  <shadedPattern>META-INF/versions/17/com/fasterxml/jackson/core/internal/shaded/fdp/v${project.version.underscore}</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>META-INF/versions/21/ch/randelshofer/fastdoubleparser</pattern>
-                  <shadedPattern>META-INF/versions/21/com/fasterxml/jackson/core/internal/shaded/fdp/v${project.version.underscore}</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>META-INF/versions/22/ch/randelshofer/fastdoubleparser</pattern>
-                  <shadedPattern>META-INF/versions/22/com/fasterxml/jackson/core/internal/shaded/fdp/v${project.version.underscore}</shadedPattern>
-                </relocation>
-              </relocations>
-            </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>de.jjohannes</groupId>
-        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
-	<!-- 27-Apr-2023, tatu: [core#999]: Need to exclude shaded FDP
-	   dependency from GMM
-	  -->
-	<configuration>
-          <removedDependencies>
-            <dependency>
-              <groupId>ch.randelshofer</groupId>
-              <artifactId>fastdoubleparser</artifactId>
-            </dependency>
-          </removedDependencies>
-        </configuration>
-      </plugin>
+      </plugin>     
+
+      <!-- Jar plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -246,40 +180,17 @@ com.fasterxml.jackson.core.*;version=${project.version}
         </configuration>
       </plugin>
 
-      <!-- 23-Mar-2023, tatu: [core#965] Need to put back Gradle module metadata marker -->
+      <!-- Replace plugin (disable if PackageVersion.java.in is missing) -->
       <plugin>
-        <groupId>io.github.floverfelt</groupId>
-        <artifactId>find-and-replace-maven-plugin</artifactId>
-        <version>1.1.0</version>
-        <executions>
-          <execution>
-            <id>exec</id>
-            <phase>package</phase>
-            <goals>
-              <goal>find-and-replace</goal>
-            </goals>
-            <configuration>
-              <replacementType>file-contents</replacementType>
-              <baseDir>${basedir}</baseDir>
-              <findRegex><![CDATA[<modelVersion>4.0.0</modelVersion>]]></findRegex>
-              <fileMask>dependency-reduced-pom.xml</fileMask>
-              <replaceValue><![CDATA[  <!-- This module was also published with a richer model, Gradle metadata,  -->
-  <!-- which should be used instead. Do not delete the following line which  -->
-  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
-  <!-- that they should prefer consuming it instead. -->
-  <!-- do_not_remove: published-with-gradle-metadata -->
-  <modelVersion>4.0.0</modelVersion>]]></replaceValue>
-              <recursive>false</recursive>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <configuration>
+        <skip>true</skip>
+        </configuration>
       </plugin>
 
-      <!-- 16-Nov-2022, tatu: [core#838] add verification of compatibility
-           wrt Android SDK versions using AnimalSniffer with "gummy bears" signatures.
-           To be run from CI, but manually with:
-              mvn clean package animal-sniffer:check
-        -->
+
+      <!-- Animal Sniffer plugin for Android compatibility -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -302,22 +213,32 @@ com.fasterxml.jackson.core.*;version=${project.version}
       <artifactId>fastdoubleparser</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <!-- Test dependencies -->
+    
+    <!-- Java Faker -->
+    <dependency>
+      <groupId>com.github.javafaker</groupId>
+      <artifactId>javafaker</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+ 
+    <!-- JUnit 5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!-- Jackson Databind -->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
+
+    <!-- AssertJ for testing -->
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>
