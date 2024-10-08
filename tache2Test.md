@@ -28,14 +28,29 @@ Ce test verifie si la méthode writeStartObject dans UTF8JsonGenerator.java roul
 [Fonction writeStartObject()](src\main\java\com\fasterxml\jackson\core\json\UTF8JsonGenerator.java) (ligne 393) <br>
 [Fonction testWriteStartObjectWithParameters()](src\test\java\com\fasterxml\jackson\core\write\UTF8GeneratorTest.java) (ligne 155)
 
-## InputCoercionException
+# Les 5 tests suivants sont conçus pour tester les fonctionnalités de `NameN.java`.
 
-Class Location: jackson-core/src/main/java/com/fasterxml/jackson/core/exc/InputCoercionException.java
+src  code: https://github.com/Mehtab68/jackson-core/blob/2.18/src/main/java/com/fasterxml/jackson/core/sym/NameN.java
+test code: https://github.com/Mehtab68/jackson-core/blob/2.18/src/test/java/com/fasterxml/jackson/core/sym/NameNTest.java
 
-### Justification for Tested Methods:
+6. **`testEqualsSingleQuad`**
+   - **Fonction** : Vérifie si la classe `NameN` est égale à un seul quad.
+   - **Objectif** : S'assurer que `NameN` ne correspond pas à un tableau contenant un seul quad, garantissant que les longueurs différentes sont bien gérées.
 
-1. **Constructor and Property Accessors**: It is essential to verify that the input and target types provided during instantiation are correctly stored and can be accessed using `getInputType()` and `getTargetType()`.
-2. **withParser Method**: This method updates the internal parser reference in the exception, and it is important to ensure that it functions as expected.
-3. **Exception Message**: Verifying the exception message ensures that the error information provided during instantiation is correctly preserved and returned.
+7. **`testEqualsTwoQuads`**
+   - **Fonction** : Vérifie si la classe `NameN` est égale à deux quads.
+   - **Objectif** : Valider que `NameN` ne correspond pas à un tableau de deux quads, évitant les correspondances incorrectes pour des entrées plus courtes.
 
-These tests ensure that exception handling works correctly and covers key functionalities of the `InputCoercionException` class.
+8. **`testEqualsThreeQuads`**
+   - **Fonction** : Vérifie si la classe `NameN` est égale à trois quads.
+   - **Objectif** : Assurer que `NameN` ne correspond pas à un tableau de trois quads, testant davantage le traitement des longueurs d'entrée différentes.
+
+9. **`testEqualsQuadArrayMatching`**
+   - **Fonction** : Vérifie si `NameN` est égal à un tableau de quads correspondant.
+   - **Objectif** : S'assurer que `NameN` reconnaît correctement un tableau de quads complet et correspondant, garantissant la fonctionnalité attendue.
+
+10. **`testEqualsQuadArrayNonMatching`**
+   - **Fonction** : Vérifie si `NameN` est égal à un tableau de quads non correspondant.
+   - **Objectif** : Valider que `NameN` ne correspond pas à un tableau de quads différent, garantissant que le mécanisme de comparaison est fiable.
+
+Ces tests vérifient que la méthode de comparaison de la classe `NameN` gère correctement des tableaux de différentes longueurs et contenus, assurant ainsi une logique de correspondance cohérente.
