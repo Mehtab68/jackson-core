@@ -1,4 +1,4 @@
-name: Maven tests
+name: Maven tests and coverage report
 
 on:
   pull_request:
@@ -8,17 +8,52 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      # Checkout the repository
+      - uses: actions/checkout@v4
+      
+      # Set up JDK 17
       - name: Set up JDK 17
-        uses: actions/setup-java@6a0805fcefea3d4657a47ac4c165951e33482018 # v4
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
 
-      - name: Run Maven tests
-        run: mvn verify
+      # Run Maven tests and generate JaCoCo coverage report
+      - name: Run Maven tests and generate coverage report
+        run: mvn clean verify jacoco:report
 
+      # Upload JaCoCo Coverage Report as an artifact
+      - name: Upload JaCoCo Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/  # Path to the JaCoCo report
+
+      # Generate and list untested classes
+      - name: Generate untested classes list
+        run: |
+          if [ -f target/site/jacoco/jacoco.xml ]; then
+            grep '<counter type="INSTRUCTION" missed="[1-9]' target/site/jacoco/jacoco.xml | sed -n 's/.*name="\(.*\)" .*missed=".*"/\1/p' > untested-classes.txt
+            if [ -s untested-classes.txt ]; then
+              echo "<html><head><title>Untested Classes</title></head><body><h1>Untested Classes</h1><ul>" > untested-classes.html
+              while read class; do
+                echo "<li>$class</li>" >> untested-classes.html
+              done < untested-classes.txt
+              echo "</ul></body></html>" >> untested-classes.html
+            else
+              echo "<html><head><title>Untested Classes</title></head><body><h1>All classes have been fully tested</h1></body></html>" > untested-classes.html
+            fi
+          fi
+
+      # Upload the list of untested classes as an artifact
+      - name: Upload Untested Classes List
+        uses: actions/upload-artifact@v3
+        with:
+          name: untested-classes
+          path: untested-classes.html
+
+      # Fail if coverage has not improved
       - name: Get JaCoCo Coverage
         id: coverage  
         run: |
