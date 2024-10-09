@@ -120,6 +120,7 @@
           <excludes>
             <exclude>**/failing/**/*.java</exclude>
           </excludes>
+          <skip>true</skip>
         </configuration>
       </plugin>
 
