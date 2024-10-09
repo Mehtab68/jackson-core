@@ -74,32 +74,29 @@ La méthode parseAsIntTest est un test unitaire qui vérifie le comportement de 
 
 # Les 5 tests suivants sont conçus pour tester les fonctionnalités de `NameN.java`.
 
-src code: https://github.com/Mehtab68/jackson-core/blob/2.18/src/main/java/com/fasterxml/jackson/core/sym/NameN.java
 test code: https://github.com/Mehtab68/jackson-core/blob/2.18/src/test/java/com/fasterxml/jackson/core/sym/NameNTest.java
 
-6. **`testEqualsSingleQuad`**
+# Test 6 testEqualsSingleQuad
 
-   - **Fonction** : Vérifie si la classe `NameN` est égale à un seul quad.
-   - **Objectif** : S'assurer que `NameN` ne correspond pas à un tableau contenant un seul quad, garantissant que les longueurs différentes sont bien gérées.
+- **Fonction** : Vérifie si la classe `NameN` est égale à un seul quad.
+- **Objectif** : S'assurer que `NameN` ne correspond pas à un tableau contenant un seul quad, garantissant que les longueurs différentes sont bien gérées.
 
-7. **`testEqualsTwoQuads`**
+# Test 7 testEqualsTwoQuads
 
-   - **Fonction** : Vérifie si la classe `NameN` est égale à deux quads.
-   - **Objectif** : Valider que `NameN` ne correspond pas à un tableau de deux quads, évitant les correspondances incorrectes pour des entrées plus courtes.
+- **Fonction** : Vérifie si la classe `NameN` est égale à deux quads.
+- **Objectif** : Valider que `NameN` ne correspond pas à un tableau de deux quads, évitant les correspondances incorrectes pour des entrées plus courtes.
 
-8. **`testEqualsThreeQuads`**
+# Test 8 testEqualsThreeQuads
 
-   - **Fonction** : Vérifie si la classe `NameN` est égale à trois quads.
-   - **Objectif** : Assurer que `NameN` ne correspond pas à un tableau de trois quads, testant davantage le traitement des longueurs d'entrée différentes.
+- **Fonction** : Vérifie si la classe `NameN` est égale à trois quads.
+- **Objectif** : Assurer que `NameN` ne correspond pas à un tableau de trois quads, testant davantage le traitement des longueurs d'entrée différentes.
 
-9. **`testEqualsQuadArrayMatching`**
+# Test 9 testEqualsQuadArrayMatching
 
-   - **Fonction** : Vérifie si `NameN` est égal à un tableau de quads correspondant.
-   - **Objectif** : S'assurer que `NameN` reconnaît correctement un tableau de quads complet et correspondant, garantissant la fonctionnalité attendue.
+- **Fonction** : Vérifie si `NameN` est égal à un tableau de quads correspondant.
+- **Objectif** : S'assurer que `NameN` reconnaît correctement un tableau de quads complet et correspondant, garantissant la fonctionnalité attendue.
 
-10. **`testEqualsQuadArrayNonMatching`**
+# Test 10 testEqualsQuadArrayNonMatching
 
 - **Fonction** : Vérifie si `NameN` est égal à un tableau de quads non correspondant.
 - **Objectif** : Valider que `NameN` ne correspond pas à un tableau de quads différent, garantissant que le mécanisme de comparaison est fiable.
-
-Ces tests vérifient que la méthode de comparaison de la classe `NameN` gère correctement des tableaux de différentes longueurs et contenus, assurant ainsi une logique de correspondance cohérente.
