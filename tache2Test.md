@@ -28,6 +28,14 @@ Ce test verifie si la méthode writeStartObject dans UTF8JsonGenerator.java roul
 [Fonction writeStartObject()](src\main\java\com\fasterxml\jackson\core\json\UTF8JsonGenerator.java) (ligne 393) <br>
 [Fonction testWriteStartObjectWithParameters()](src\test\java\com\fasterxml\jackson\core\write\UTF8GeneratorTest.java) (ligne 155)
 
+# Test 5 testResetWithCopy():
+
+Ce test s'assure que la fonction resetWithCopy() fonctionne bien. Le comportement attendu devrait configurer et
+modifie adéquatement leTextBuffer. Ici on test la longueur supérieure à la longueur restante de la chaîne.
+
+[Fonction resetWithCopy()](src\main\java\com\fasterxml\jackson\core\util\TextBuffer.java) (ligne 287) <br>
+[Fonction testResetWithCopy()](src\test\java\com\fasterxml\jackson\core\util\TextBufferTest.java) (ligne 235)
+
 # Les 5 tests suivants sont conçus pour tester les fonctionnalités de `NameN.java`.
 
 src code: https://github.com/Mehtab68/jackson-core/blob/2.18/src/main/java/com/fasterxml/jackson/core/sym/NameN.java
