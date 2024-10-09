@@ -19,9 +19,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Run Maven tests and generate coverage report
+      # Run Maven tests and generate JaCoCo coverage report
       - name: Run Maven tests and generate coverage report
-        run: mvn clean verify
+        run: mvn clean verify jacoco:report
 
       # Upload JaCoCo Coverage Report as an artifact
       - name: Upload JaCoCo Coverage Report
